@@ -2,6 +2,7 @@
 TC-bot using Attention-Based Recurrent Neural Network(NLU) 
 
 - Original TC-bot (github): [End-to-End Task-Completion Neural Dialogue Systems](https://github.com/MiuLab/TC-Bot)
+
 An implementation of the
 [End-to-End Task-Completion Neural Dialogue Systems](https://arxiv.org/abs/1703.01008) and [A User Simulator for Task-Completion Dialogues](https://arxiv.org/abs/1612.05688).
 
