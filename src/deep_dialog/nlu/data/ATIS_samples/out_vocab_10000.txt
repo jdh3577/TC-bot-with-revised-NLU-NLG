@@ -1,0 +1,15 @@
+_PAD
+_UNK
+O
+B-toloc.city_name
+B-fromloc.city_name
+B-round_trip
+I-round_trip
+B-depart_date.month_name
+B-flight_mod
+B-cost_relative
+I-toloc.city_name
+I-fromloc.city_name
+B-economy
+B-depart_date.day_number
+I-depart_date.day_number
