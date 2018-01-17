@@ -1,4 +1,4 @@
-# TC-bot-with-revised-NLU
+# TC-bot-with-revised-NLU-and-NLG
 TC-bot using Attention-Based Recurrent Neural Network(NLU) 
 
 - Original TC-bot (github): [End-to-End Task-Completion Neural Dialogue Systems](https://github.com/MiuLab/TC-Bot)
@@ -8,3 +8,5 @@ An implementation of the
 
 - NLU model: [Attention-Based Recurrent Neural Network Models for Joint Intent Detection
 and Slot Filling](http://www.isca-speech.org/archive/Interspeech_2016/pdfs/1352.PDF)
+
+- NLG model: [(Semantically Conditioned LSTM-based Natural Language Generation for Spoken Dialogue Systems](http://www.emnlp2015.org/proceedings/EMNLP/pdf/EMNLP199.pdf)
