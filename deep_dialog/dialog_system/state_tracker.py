@@ -179,3 +179,14 @@ class StateTracker:
         #   This code should execute after update code regardless of what kind of action (agent/user)
         ########################################################################
         self.turn_count += 1
+
+    def reward_function(self):
+        """ Reward Function 1: a reward function based on the dialog_status """
+        reward = 1
+        user_action = self.history_dictionaries[-2]
+        agt_action = self.history_dictionaries[-1]
+        aa = 1
+        # 필요 없는거 알려줄때,
+        # 필요 없는거 물을때,
+
+        return reward

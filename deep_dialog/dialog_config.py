@@ -4,9 +4,11 @@ Created on May 17, 2016
 @author: xiul, t-zalipt
 '''
 
-sys_request_slots = ['moviename', 'theater', 'starttime', 'date', 'numberofpeople', 'genre', 'state', 'city', 'zip', 'critic_rating', 'mpaa_rating', 'distanceconstraints', 'video_format', 'theater_chain', 'price', 'actor', 'description', 'other', 'numberofkids']
-sys_inform_slots = ['moviename', 'theater', 'starttime', 'date', 'genre', 'state', 'city', 'zip', 'critic_rating', 'mpaa_rating', 'distanceconstraints', 'video_format', 'theater_chain', 'price', 'actor', 'description', 'other', 'numberofkids', 'taskcomplete', 'ticket']
+#sys_request_slots = ['moviename', 'theater', 'starttime', 'date', 'numberofpeople', 'genre', 'state', 'city', 'zip', 'critic_rating', 'mpaa_rating', 'distanceconstraints', 'video_format', 'theater_chain', 'price', 'actor', 'description', 'other', 'numberofkids']
+#sys_inform_slots = ['moviename', 'theater', 'starttime', 'date', 'genre', 'state', 'city', 'zip', 'critic_rating', 'mpaa_rating', 'distanceconstraints', 'video_format', 'theater_chain', 'price', 'actor', 'description', 'other', 'numberofkids', 'taskcomplete', 'ticket']
 
+sys_request_slots = ['moviename', 'theater', 'starttime', 'date', 'numberofpeople', 'genre', 'state', 'city', 'video_format', 'actor', 'actress' ]
+sys_inform_slots = ['moviename', 'theater', 'starttime', 'date', 'genre', 'state', 'city', 'video_format', 'actor', 'actress', 'taskcomplete', 'ticket']
 start_dia_acts = {
     #'greeting':[],
     'request':['moviename', 'starttime', 'theater', 'city', 'state', 'date', 'genre', 'ticket', 'numberofpeople']
@@ -27,9 +29,9 @@ PER_TURN_REWARD = 0
 ################################################################################
 #  Special Slot Values
 ################################################################################
-I_DO_NOT_CARE = "I do not care"
-NO_VALUE_MATCH = "NO VALUE MATCHES!!!"
-TICKET_AVAILABLE = 'Ticket Available'
+I_DO_NOT_CARE = "상관 없습니다"
+NO_VALUE_MATCH = "일치하는것이 없습니다!"
+TICKET_AVAILABLE = '티켓 가능합니다'
 
 ################################################################################
 #  Constraint Check

@@ -50,44 +50,45 @@ def naive_tokenizer(sentence):
 
 def create_vocabulary(vocabulary_path, data_path, max_vocabulary_size,
                       tokenizer=None, normalize_digits=True):
-  """Create vocabulary file (if it does not exist yet) from data file.
-
-  Data file is assumed to contain one sentence per line. Each sentence is
-  tokenized and digits are normalized (if normalize_digits is set).
-  Vocabulary contains the most-frequent tokens up to max_vocabulary_size.
-  We write it to vocabulary_path in a one-token-per-line format, so that later
-  token in the first line gets id=0, second line gets id=1, and so on.
-
-  Args:
-    vocabulary_path: path where the vocabulary will be created.
-    data_path: data file that will be used to create vocabulary.
-    max_vocabulary_size: limit on the size of the created vocabulary.
-    tokenizer: a function to use to tokenize each data sentence;
-      if None, basic_tokenizer will be used.
-    normalize_digits: Boolean; if true, all digits are replaced by 0s.
-  """
-  if not gfile.Exists(vocabulary_path):
-    print("Creating vocabulary %s from data %s" % (vocabulary_path, data_path))
-    vocab = {}
-    with gfile.GFile(data_path, mode="r") as f:
-      counter = 0
-      for line in f:
-        counter += 1
-        if counter % 100000 == 0:
-          print("  processing line %d" % counter)
-        tokens = tokenizer(line) if tokenizer else basic_tokenizer(line)
-        for w in tokens:
-          word = re.sub(_DIGIT_RE, "0", w) if normalize_digits else w
-          if word in vocab:
-            vocab[word] += 1
-          else:
-            vocab[word] = 1
-      vocab_list = START_VOCAB_dict['with_padding'] + sorted(vocab, key=vocab.get, reverse=True)
-      if len(vocab_list) > max_vocabulary_size:
-        vocab_list = vocab_list[:max_vocabulary_size]
-      with gfile.GFile(vocabulary_path, mode="w") as vocab_file:
-        for w in vocab_list:
-          vocab_file.write(w + "\n")
+    """Create vocabulary file (if it does not exist yet) from data file.
+  
+    Data file is assumed to contain one sentence per line. Each sentence is
+    tokenized and digits are normalized (if normalize_digits is set).
+    Vocabulary contains the most-frequent tokens up to max_vocabulary_size.
+    We write it to vocabulary_path in a one-token-per-line format, so that later
+    token in the first line gets id=0, second line gets id=1, and so on.
+  
+    Args:
+      vocabulary_path: path where the vocabulary will be created.
+      data_path: data file that will be used to create vocabulary.
+      max_vocabulary_size: limit on the size of the created vocabulary.
+      tokenizer: a function to use to tokenize each data sentence;
+        if None, basic_tokenizer will be used.
+      normalize_digits: Boolean; if true, all digits are replaced by 0s.
+    """
+    if not gfile.Exists(vocabulary_path):
+        print("Creating vocabulary %s from data %s" % (vocabulary_path, data_path))
+        vocab = {}
+        #with gfile.GFile(data_path, mode="r") as f:
+        with open(data_path, "r") as f:
+            counter = 0
+            for line in f:
+                counter += 1
+                if counter % 100000 == 0:
+                    print("  processing line %d" % counter)
+                tokens = tokenizer(line) if tokenizer else basic_tokenizer(line)
+                for w in tokens:
+                    word = re.sub(_DIGIT_RE, "0", w) if normalize_digits else w
+                    if word in vocab:
+                        vocab[word] += 1
+                    else:
+                        vocab[word] = 1
+            vocab_list = START_VOCAB_dict['with_padding'] + sorted(vocab, key=vocab.get, reverse=True)
+            if len(vocab_list) > max_vocabulary_size:
+                vocab_list = vocab_list[:max_vocabulary_size]
+            with gfile.GFile(vocabulary_path, mode="w") as vocab_file:
+                for w in vocab_list:
+                    vocab_file.write(w + "\n")
 
 
 def initialize_vocabulary(vocabulary_path):

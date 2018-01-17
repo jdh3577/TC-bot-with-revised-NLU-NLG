@@ -33,7 +33,7 @@ class DialogManager:
         
         if dialog_config.run_mode < 3:
             print ("New episode, user goal:")
-            print (json.dumps(self.user.goal, indent=2))
+            print (json.dumps(self.user.goal, ensure_ascii=False, indent=2))
         self.print_function(user_action = self.user_action)
             
         self.agent.initialize_episode()
@@ -54,13 +54,16 @@ class DialogManager:
         
         self.agent.add_nl_to_action(self.agent_action) # add NL to Agent Dia_Act
         self.print_function(agent_action = self.agent_action['act_slot_response'])
-        
+
+        self.reward = self.state_tracker.reward_function()
+
         ########################################################################
         #   CALL USER TO TAKE HER TURN
         ########################################################################
         self.sys_action = self.state_tracker.dialog_history_dictionaries()[-1]
         self.user_action, self.episode_over, dialog_status = self.user.next(self.sys_action)
-        self.reward = self.reward_function(dialog_status)
+
+        #self.reward = self.reward_function(dialog_status)
         
         ########################################################################
         #   Update state tracker with latest user action

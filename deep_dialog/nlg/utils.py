@@ -8,6 +8,8 @@ import math
 import numpy as np
 
 
+
+
 def initWeights(n,d):
     """ Initialization Strategy """
     #scale_factor = 0.1
@@ -19,3 +21,4 @@ def mergeDicts(d0, d1):
     for k in d1:
         if k in d0: d0[k] += d1[k]
         else: d0[k] = d1[k]
+

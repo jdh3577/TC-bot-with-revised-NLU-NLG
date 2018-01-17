@@ -88,7 +88,7 @@ class nlu:
 
         _buckets = [(FLAGS.max_sequence_length, FLAGS.max_sequence_length)]
         """Create model and initialize or load parameters in session."""
-        with tf.variable_scope("model", reuse=None):
+        with tf.variable_scope("nlu_model", reuse=None):
             model_train = multi_task_model.MultiTaskModel(
                 source_vocab_size, target_vocab_size, label_vocab_size, _buckets,
                 FLAGS.word_embedding_size, FLAGS.size, FLAGS.num_layers, FLAGS.max_gradient_norm, FLAGS.batch_size,
@@ -97,7 +97,7 @@ class nlu:
                 use_attention=FLAGS.use_attention,
                 bidirectional_rnn=FLAGS.bidirectional_rnn,
                 task=task)
-        with tf.variable_scope("model", reuse=True):
+        with tf.variable_scope("nlu_model", reuse=True):
             model_test = multi_task_model.MultiTaskModel(
                 source_vocab_size, target_vocab_size, label_vocab_size, _buckets,
                 FLAGS.word_embedding_size, FLAGS.size, FLAGS.num_layers, FLAGS.max_gradient_norm, FLAGS.batch_size,
@@ -112,6 +112,8 @@ class nlu:
         if ckpt:
             print("Reading model parameters from %s" % ckpt.model_checkpoint_path)
             model_train.saver.restore(session, ckpt.model_checkpoint_path)
+            print('Done!')
+
         else:
             print("Created model with fresh parameters.")
             session.run(tf.initialize_all_variables())
@@ -178,13 +180,6 @@ class nlu:
 
 
             pred_tags = self.run_valid_test(tmp_annot)
-            pred_words_indices = [self.tag_set[index] for index in pred_tags]
-
-            if tmp_annot in self.input_target.keys():
-                self.input_target[tmp_annot].append(pred_words_indices)
-            else:
-                self.input_target[tmp_annot] = [];
-                self.input_target[tmp_annot].append(pred_words_indices)
 
             diaact = self.parse_nlu_to_diaact(pred_tags, tmp_annot)
 
@@ -293,7 +288,11 @@ class nlu:
             arr = intent.split('+')
             diaact['diaact'] = arr[0]
             diaact['request_slots'] = {}
-            for ele in arr[1:]: 
+            for ele in arr[1:]:
+
+                if ele == 'description':
+                    aa = 1
+
                 #request_slots.append(ele)
                 diaact['request_slots'][ele] = 'UNK'
         

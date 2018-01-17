@@ -116,7 +116,10 @@ class MultiTaskModel(object):
             self.update = opt.apply_gradients(
                 zip(clipped_gradients, params), global_step=self.global_step)
 
-        self.saver = tf.train.Saver(tf.all_variables())
+        all_vars = tf.all_variables()
+        model_nlu_vars = [k for k in all_vars if k.name.startswith("nlu_model")]
+
+        self.saver = model_saver = tf.train.Saver(model_nlu_vars) #tf.train.Saver(tf.all_variables())
 
 
     def joint_step(self, session, encoder_inputs, tags, tag_weights, labels, batch_sequence_length,
@@ -394,6 +397,84 @@ class MultiTaskModel(object):
         # Encoder inputs are padded and then reversed.
         encoder_pad = [data_utils.PAD_ID] * (encoder_size - len(encoder_input))
         #encoder_inputs.append(list(reversed(encoder_input + encoder_pad)))
+        encoder_inputs.append(list(encoder_input + encoder_pad))
+
+        # Decoder inputs get an extra "GO" symbol, and are padded then.
+        decoder_pad_size = decoder_size - len(decoder_input)
+        decoder_inputs.append(decoder_input +
+                              [data_utils.PAD_ID] * decoder_pad_size)
+        labels.append(label)
+
+        # Now we create batch-major vectors from the data selected above.
+        batch_encoder_inputs, batch_decoder_inputs, batch_weights, batch_labels = [], [], [], []
+
+        # Batch encoder inputs are just re-indexed encoder_inputs.
+        for length_idx in xrange(encoder_size):
+            batch_encoder_inputs.append(
+                np.array([encoder_inputs[batch_idx][length_idx]
+                          for batch_idx in xrange(1)], dtype=np.int32))
+
+        # Batch decoder inputs are re-indexed decoder_inputs, we create weights.
+        for length_idx in xrange(decoder_size):
+            batch_decoder_inputs.append(
+                np.array([decoder_inputs[batch_idx][length_idx]
+                          for batch_idx in xrange(1)], dtype=np.int32))
+
+            # Create target_weights to be 0 for targets that are padding.
+            batch_weight = np.ones(1, dtype=np.float32)
+            for batch_idx in xrange(1):
+                # We set weight to 0 if the corresponding target is a PAD symbol.
+                # The corresponding target is decoder_input shifted by 1 forward.
+                #        if length_idx < decoder_size - 1:
+                #          target = decoder_inputs[batch_idx][length_idx + 1]
+                #        print (length_idx)
+                if decoder_inputs[batch_idx][length_idx] == data_utils.PAD_ID:
+                    batch_weight[batch_idx] = 0.0
+            batch_weights.append(batch_weight)
+
+        batch_labels.append(
+            np.array([labels[batch_idx][0]
+                      for batch_idx in xrange(1)], dtype=np.int32))
+
+        batch_sequence_length = np.array(batch_sequence_length_list, dtype=np.int32)
+        return batch_encoder_inputs, batch_decoder_inputs, batch_weights, batch_sequence_length, batch_labels
+
+    def get_rand(self, token_ids):
+        """Get a single sample data from the specified bucket, prepare for step.
+
+        To feed data in step(..) it must be a list of batch-major vectors, while
+        data here contains single length-major cases. So the main logic of this
+        function is to re-index data cases to be in the proper format for feeding.
+
+        Args:
+          data: a tuple of size len(self.buckets) in which each element contains
+            lists of pairs of input and output data that we use to create a batch.
+          bucket_id: integer, which bucket to get the batch for.
+
+        Returns:
+          The triple (encoder_inputs, decoder_inputs, target_weights) for
+          the constructed batch that has the proper format to call step(...) later.
+        """
+        encoder_size, decoder_size = self.buckets[0]
+        encoder_inputs, decoder_inputs, labels = [], [], []
+
+        # Get a random batch of encoder and decoder inputs from data,
+        # pad them if needed, reverse encoder inputs and add GO to decoder.
+        batch_sequence_length_list = list()
+        # for _ in xrange(self.batch_size):
+
+        # encoder_input, decoder_input, label = data[bucket_id][sample_id]
+        encoder_input = token_ids
+        decoder_input = token_ids
+        for i in range(len(encoder_input)):
+            decoder_input[i] = random.randint(1,22)
+        label = [0]
+
+        batch_sequence_length_list.append(len(encoder_input))
+
+        # Encoder inputs are padded and then reversed.
+        encoder_pad = [data_utils.PAD_ID] * (encoder_size - len(encoder_input))
+        # encoder_inputs.append(list(reversed(encoder_input + encoder_pad)))
         encoder_inputs.append(list(encoder_input + encoder_pad))
 
         # Decoder inputs get an extra "GO" symbol, and are padded then.

@@ -26,12 +26,12 @@ Next, it triggers the simulator to run for the specified number of episodes.
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('--dict_path', dest='dict_path', type=str, default='./deep_dialog/data/dicts.v3.p', help='path to the .json dictionary file')
-    parser.add_argument('--movie_kb_path', dest='movie_kb_path', type=str, default='./deep_dialog/data/movie_kb.1k.p', help='path to the movie kb .json file')
+    parser.add_argument('--dict_path', dest='dict_path', type=str, default='./deep_dialog/data/movie_dictionary_kor.pickle', help='path to the .json dictionary file')
+    parser.add_argument('--movie_kb_path', dest='movie_kb_path', type=str, default='./deep_dialog/data/movie_database_kor.pickle', help='path to the movie kb .json file')
     parser.add_argument('--act_set', dest='act_set', type=str, default='./deep_dialog/data/dia_acts.txt', help='path to dia act set; none for loading from labeled file')
     parser.add_argument('--slot_set', dest='slot_set', type=str, default='./deep_dialog/data/slot_set.txt', help='path to slot set; none for loading from labeled file')
-    parser.add_argument('--goal_file_path', dest='goal_file_path', type=str, default='./deep_dialog/data/user_goals_first_turn_template.part.movie.v1.p', help='a list of user goals')
-    parser.add_argument('--diaact_nl_pairs', dest='diaact_nl_pairs', type=str, default='./deep_dialog/data/dia_act_nl_pairs.v6.json', help='path to the pre-defined dia_act&NL pairs')
+    parser.add_argument('--goal_file_path', dest='goal_file_path', type=str, default='./deep_dialog/data/goal_set_kor.pickle', help='a list of user goals')
+    parser.add_argument('--diaact_nl_pairs', dest='diaact_nl_pairs', type=str, default='./deep_dialog/data/kor_pair.pickle', help='path to the pre-defined dia_act&NL pairs')
 
     parser.add_argument('--max_turn', dest='max_turn', default=20, type=int, help='maximum length of each dialog (default=20, 0=no maximum length)')
     parser.add_argument('--episodes', dest='episodes', default=2, type=int, help='Total number of episodes to run (default=1)')
@@ -227,8 +227,10 @@ save_check_point = params['save_check_point']
 best_model = {}
 best_res = {'success_rate': 0, 'ave_reward':float('-inf'), 'ave_turns': float('inf'), 'epoch':0}
 agent.set_nlu_model(None)
+agent.set_nlg_model(None)
 best_model['model'] = copy.deepcopy(agent)
 agent.set_nlu_model(nlu_model)
+agent.set_nlg_model(nlg_model)
 best_res['success_rate'] = 0
 
 performance_records = {}
@@ -326,12 +328,6 @@ def run_episodes(count, status):
     cumulative_reward = 0
     cumulative_turns = 0
 
-    with open("data\\tag.pickle", 'wb') as f:
-        pickle.dump(nlu_model.tag_set, f)
-
-    with open("data\\itag.pickle", 'wb') as f:
-        pickle.dump(nlu_model.inverse_tag_dict, f)
-
     if agt == 9 and params['trained_model_path'] == None and warm_start == 1:
         print ('warm_start starting ...')
         warm_start_simulation()
@@ -370,8 +366,10 @@ def run_episodes(count, status):
                 
             if simulation_res['success_rate'] > best_res['success_rate']:
                 agent.set_nlu_model(None)
+                agent.set_nlg_model(None)
                 best_model['model'] = copy.deepcopy(agent)
                 agent.set_nlu_model(nlu_model)
+                agent.set_nlg_model(nlg_model)
                 best_res['success_rate'] = simulation_res['success_rate']
                 best_res['ave_reward'] = simulation_res['ave_reward']
                 best_res['ave_turns'] = simulation_res['ave_turns']
@@ -387,9 +385,9 @@ def run_episodes(count, status):
                 save_performance_records(params['write_model_dir'], agt, performance_records)
         
         print("Progress: %s / %s, Success rate: %s / %s Avg reward: %.2f Avg turns: %.2f" % (episode+1, count, successes, episode+1, float(cumulative_reward)/(episode+1), float(cumulative_turns)/(episode+1)))
-        if episode % 5000 == 0:
-            with open("data\\index.%d.pickle"%(episode), 'wb') as f:
-                pickle.dump(nlu_model.input_target, f)
+        #if episode % 5000 == 0:
+        #    with open("data\\index.%d.pickle"%(episode), 'wb') as f:
+        #        pickle.dump(nlu_model.input_target, f)
 
 
 

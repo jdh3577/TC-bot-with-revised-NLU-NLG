@@ -108,6 +108,8 @@ class RuleSimulator(UserSimulator):
         sample_action['turn'] = self.state['turn']
         
         self.add_nl_to_action(sample_action)
+        if  'description' in sample_action['request_slots'].keys():
+            aa = 1
         return sample_action
     
     def _sample_goal(self, goal_set):
@@ -204,7 +206,11 @@ class RuleSimulator(UserSimulator):
         response_action['nl'] = ""
         
         # add NL to dia_act
-        self.add_nl_to_action(response_action)                       
+        self.add_nl_to_action(response_action)
+
+        if  'description' in response_action['request_slots'].keys():
+            aa = 1
+
         return response_action, self.episode_over, self.dialog_status
     
     
