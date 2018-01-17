@@ -15,8 +15,8 @@ from deep_dialog.nlu.bi_lstm import biLSTM
 
 import tensorflow as tf
 
-import data_utils
-import multi_task_model
+from deep_dialog.nlu import data_utils
+from deep_dialog.nlu import multi_task_model
 
 
 tf.app.flags.DEFINE_float("max_gradient_norm", 5.0,
@@ -49,14 +49,14 @@ tf.app.flags.DEFINE_boolean("bidirectional_rnn", True,
 tf.app.flags.DEFINE_string("task", "joint", "Options: joint; intent; tagging")
 FLAGS = tf.app.flags.FLAGS
 
-
-if FLAGS.max_sequence_length == 0:
-    print ('Please indicate max sequence length. Exit')
-    exit()
-
-if FLAGS.task is None:
-    print ('Please indicate task to run. Available options: intent; tagging; joint')
-    exit()
+#
+# if FLAGS.max_sequence_length == 0:
+#     print ('Please indicate max sequence length. Exit')
+#     exit()
+#
+# if FLAGS.task is None:
+#     print ('Please indicate task to run. Available options: intent; tagging; joint')
+#     exit()
 
 task = dict({'intent':0, 'tagging':0, 'joint':0})
 

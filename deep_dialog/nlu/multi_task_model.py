@@ -21,10 +21,10 @@ import tensorflow as tf
 from tensorflow.python.framework import dtypes
 
 
-import data_utils
-import seq_labeling
-import seq_classification
-import generate_encoder_output
+from deep_dialog.nlu import data_utils
+from deep_dialog.nlu import seq_labeling
+from deep_dialog.nlu import seq_classification
+from deep_dialog.nlu import generate_encoder_output
 
 class MultiTaskModel(object):
     def __init__(self, source_vocab_size, tag_vocab_size, label_vocab_size, buckets,

@@ -123,9 +123,9 @@ class nlg:
 
         for i in range(len(sort_slot_index)):
             if date_index >-1 and sort_slot_index[i] == date_index:
-                sentence_tmp[slot_sentence_index[i]] = idx_to_slot[sort_slot_index[i]] + '에'
+                sentence_tmp[slot_sentence_index[i]] = idx_to_slot[sort_slot_index[i]]
             elif space_index >-1 and sort_slot_index[i] == space_index:
-                sentence_tmp[slot_sentence_index[i]] = idx_to_slot[sort_slot_index[i]] + '에서'
+                sentence_tmp[slot_sentence_index[i]] = idx_to_slot[sort_slot_index[i]]
             else:
                 sentence_tmp[slot_sentence_index[i]] = idx_to_slot[sort_slot_index[i]]
 

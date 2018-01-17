@@ -12,7 +12,7 @@ except:
     from tensorflow.contrib.rnn import DropoutWrapper
     from tensorflow.contrib.rnn.core_rnn_cell_impl import _linear
     from tensorflow.contrib.rnn.python.ops.core_rnn_cell import MultiRNNCell
-    
+
 from tensorflow.python.ops import variable_scope as vs
 from tensorflow.python.ops import array_ops
 from tensorflow.python.ops.math_ops import sigmoid
@@ -40,9 +40,9 @@ class SC_LSTM(BasicLSTMCell):
                 i, j, f, o = array_ops.split(1, 4, concat)
             except:
                 i, j, f, o = array_ops.split(concat, 4, 1)
-            
+
             w_d = vs.get_variable('w_d', [self.key_words_voc_size, self._num_units])
-            
+
             new_c = (c * sigmoid(f + self._forget_bias) + sigmoid(i) *
                     self._activation(j)) + tf.tanh(tf.matmul(d_act, w_d))
             new_h = self._activation(new_c) * sigmoid(o)
